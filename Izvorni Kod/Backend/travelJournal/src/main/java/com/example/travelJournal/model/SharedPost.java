@@ -2,9 +2,10 @@ package com.example.travelJournal.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "SharedPost")
+@Table(name = "sharedpost")
 public class SharedPost {
 
     @Id
@@ -14,15 +15,15 @@ public class SharedPost {
     @Column(nullable = false)
     private String content;
 
-    @Column(name = "createdAt", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "createdat", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "userid", nullable = false)
     private TJUser user;
 
     @ManyToOne
-    @JoinColumn(name = "tripId", nullable = false)
+    @JoinColumn(name = "tripid", nullable = false)
     private Trip trip;
 
     public Long getPostId() {
@@ -63,5 +64,16 @@ public class SharedPost {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> CommentList;
+
+    public List<Comment> getCommentList() {
+        return CommentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        CommentList = commentList;
     }
 }

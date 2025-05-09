@@ -3,7 +3,7 @@ package com.example.travelJournal.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Country")
+@Table(name = "country")
 public class Country {
 
     @Id

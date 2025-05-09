@@ -3,9 +3,10 @@ package com.example.travelJournal.model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
-@Table(name = "Trip")
+@Table(name = "trip")
 public class Trip {
 
     @Id
@@ -97,5 +98,17 @@ public class Trip {
     public void setUser(TJUser user) {
         this.user = user;
     }
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Media> mediaList;
+
+    public List<Media> getMediaList() {
+        return mediaList;
+    }
+
+    public void setMediaList(List<Media> mediaList) {
+        this.mediaList = mediaList;
+    }
+
 }
 
