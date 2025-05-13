@@ -1,19 +1,59 @@
 import React, { useEffect, useState } from 'react';
 
-function SharedPosts() {
+function SharedPosts({ currentUser }) {
   const [posts, setPosts] = useState([]);
+  const [commentInputs, setCommentInputs] = useState({});
 
   useEffect(() => {
     fetch('http://localhost:8080/api/shared-posts')
       .then(response => {
-        if (!response.ok) {
-          throw new Error('Network error');
-        }
+        if (!response.ok) throw new Error('Network error');
         return response.json();
       })
       .then(data => setPosts(data))
       .catch(error => console.error('Fetch error:', error));
-  }, []);
+  }, [currentUser]);
+
+  const handleInputChange = (postId, value) => {
+    setCommentInputs(prev => ({ ...prev, [postId]: value }));
+  };
+
+  const handleCommentSubmit = async (postId) => {
+    const content = commentInputs[postId];
+    if (!content || !currentUser?.userId) return;
+
+    try {
+      const response = await fetch('http://localhost:8080/api/comments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: currentUser.userId,
+          postId,
+          content
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to post comment');
+
+      const updatedPosts = posts.map(post => {
+        if (post.postId === postId) {
+          return {
+            ...post,
+            comments: [...(post.comments || []), {
+              username: currentUser.username,
+              content
+            }]
+          };
+        }
+        return post;
+      });
+      setPosts(updatedPosts);
+      setCommentInputs(prev => ({ ...prev, [postId]: '' }));
+
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div style={styles.container}>
@@ -52,6 +92,20 @@ function SharedPosts() {
                 </ul>
               </div>
             )}
+
+            {/* comment create */}
+            <div style={{ marginTop: '10px' }}>
+              <input
+                type="text"
+                placeholder="Write a comment..."
+                value={commentInputs[post.postId] || ''}
+                onChange={e => handleInputChange(post.postId, e.target.value)}
+                style={{ width: '70%', padding: '5px' }}
+              />
+              <button onClick={() => handleCommentSubmit(post.postId)} style={{ marginLeft: '10px' }}>
+                Submit
+              </button>
+            </div>
           </div>
         ))
       )}
