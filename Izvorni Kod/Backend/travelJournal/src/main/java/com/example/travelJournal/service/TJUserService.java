@@ -35,4 +35,6 @@ public class TJUserService {
     public Optional<TJUser> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public Optional<TJUser> getUserByUsername(String username) { return userRepository.findByUsername(username);}
 }
