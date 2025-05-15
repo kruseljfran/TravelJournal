@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.example.travelJournal.model.Expense;
 import com.example.travelJournal.model.Media;
 import com.example.travelJournal.model.SharedPost;
 
@@ -15,6 +16,7 @@ public class SharedPostDTO {
     private Long tripId;
     private List<String> mediaPaths;
     private List<CommentDTO> comments;
+    private List<ExpenseDTO> expenses;  // ➕ New field
 
     public SharedPostDTO(SharedPost post) {
         this.postId = post.getPostId();
@@ -22,16 +24,35 @@ public class SharedPostDTO {
         this.createdAt = post.getCreatedAt();
         this.username = post.getUser().getUsername();
         this.tripId = post.getTrip().getTripId();
+
         this.mediaPaths = post.getTrip().getMediaList()
                 .stream()
                 .map(Media::getFilePath)
                 .collect(Collectors.toList());
+
         this.comments = post.getCommentList()
                 .stream()
                 .map(comment -> new CommentDTO(
                         comment.getUser().getUsername(),
                         comment.getContent()))
                 .collect(Collectors.toList());
+
+        this.expenses = post.getTrip().getExpenses()
+                .stream()
+                .map(expense -> new ExpenseDTO(
+                        expense.getCategory(),
+                        expense.getAmount(),
+                        expense.getCurrency(),
+                        expense.getDescription()))
+                .collect(Collectors.toList());
+    }
+
+    public Long getPostId() {
+        return postId;
+    }
+
+    public void setPostId(Long postId) {
+        this.postId = postId;
     }
 
     public String getContent() {
@@ -48,14 +69,6 @@ public class SharedPostDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Long getPostId() {
-        return postId;
-    }
-
-    public void setPostId(Long postId) {
-        this.postId = postId;
     }
 
     public String getUsername() {
@@ -88,5 +101,13 @@ public class SharedPostDTO {
 
     public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
+    }
+
+    public List<ExpenseDTO> getExpenses() {
+        return expenses;
+    }
+
+    public void setExpenses(List<ExpenseDTO> expenses) {
+        this.expenses = expenses;
     }
 }
