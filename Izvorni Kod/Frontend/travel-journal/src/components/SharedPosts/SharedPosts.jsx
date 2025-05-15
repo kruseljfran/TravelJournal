@@ -5,6 +5,7 @@ function SharedPosts({ currentUser }) {
   const [commentInputs, setCommentInputs] = useState({});
 
   useEffect(() => {
+    console.log(currentUser);
     fetch('http://localhost:8080/api/shared-posts')
       .then(response => {
         if (!response.ok) throw new Error('Network error');
@@ -79,7 +80,22 @@ function SharedPosts({ currentUser }) {
             <p><strong>{post.username}</strong></p>
             <p><strong>{new Date(post.createdAt).toLocaleDateString()}</strong></p>
 
-            {/* komentari */}
+            {/* expenses */}
+            {post.expenses && post.expenses.length > 0 && (
+              <div style={styles.expenseSection}>
+                <p><strong>Expenses:</strong></p>
+                <ul style={styles.expenseList}>
+                  {post.expenses.map((expense, index) => (
+                    <li key={index} style={styles.expenseItem}>
+                      <strong>{expense.category}</strong> - {expense.amount} {expense.currency}
+                      {expense.description && `: ${expense.description}`}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* comments */}
             {post.comments && post.comments.length > 0 && (
               <div style={styles.commentSection}>
                 <p><strong>Comments:</strong></p>
@@ -156,6 +172,22 @@ const styles = {
   },
   commentItem: {
     marginBottom: '5px'
+  },
+  expenseSection: {
+  marginTop: '10px',
+  padding: '10px',
+  backgroundColor: '#eafbea',
+  borderRadius: '5px',
+  border: '1px solid #b3e6b3'
+  },
+  expenseList: {
+    listStyleType: 'none',
+    paddingLeft: 0,
+    margin: 0
+  },
+  expenseItem: {
+    marginBottom: '5px',
+    fontSize: '14px'
   }
 };
 

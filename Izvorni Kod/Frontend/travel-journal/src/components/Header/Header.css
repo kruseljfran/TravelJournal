@@ -1,0 +1,89 @@
+/* Global Reset and Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+}
+
+/* Header Styles */
+header {
+  width: 100%;
+  background-color: #2d2d2d; /* Dark background for the header */
+  color: white;
+}
+
+header .max-w-7xl {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav .text-xl {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+nav .flex {
+  display: flex;
+  gap: 1.5rem; /* Adds space between the links */
+}
+
+/* Styling Navigation Links */
+nav a {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #d3d3d3; /* Light grey color for text */
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease-in-out;
+}
+
+nav a:hover {
+  color: white;
+}
+
+nav a:hover.bg-green-500 {
+  background-color: #38a169;
+}
+
+nav a:hover.bg-blue-500 {
+  background-color: #4299e1;
+}
+
+nav a:hover.bg-gray-700 {
+  background-color: #4a5568;
+}
+
+nav a.active {
+  background-color: #3182ce;
+  color: white;
+}
+
+/* Adjustments for Active Link */
+nav a.active:hover {
+  background-color: #3182ce;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  nav .flex {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  nav a {
+    width: 100%;
+    text-align: center;
+  }
+}
