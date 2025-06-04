@@ -13,16 +13,32 @@ public class SharedPostDTO {
     private String content;
     private LocalDateTime createdAt;
     private String username;
+    private Long userId;
     private Long tripId;
     private List<String> mediaPaths;
     private List<CommentDTO> comments;
-    private List<ExpenseDTO> expenses;  // ➕ New field
+    private List<ExpenseDTO> expenses;
 
+    // Default constructor
+    public SharedPostDTO() {}
+
+    // Constructor for manual creation
+    public SharedPostDTO(Long postId, String content, LocalDateTime createdAt, String username, Long userId, Long tripId) {
+        this.postId = postId;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.username = username;
+        this.userId = userId;
+        this.tripId = tripId;
+    }
+
+    // Constructor from SharedPost entity
     public SharedPostDTO(SharedPost post) {
         this.postId = post.getPostId();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
         this.username = post.getUser().getUsername();
+        this.userId = post.getUser().getUserId();
         this.tripId = post.getTrip().getTripId();
 
         this.mediaPaths = post.getTrip().getMediaList()
@@ -30,11 +46,17 @@ public class SharedPostDTO {
                 .map(Media::getFilePath)
                 .collect(Collectors.toList());
 
+        // ✅ Fixed parameter order to match CommentDTO constructor
         this.comments = post.getCommentList()
                 .stream()
                 .map(comment -> new CommentDTO(
-                        comment.getUser().getUsername(),
-                        comment.getContent()))
+                        comment.getCommentId(),        // Long commentId
+                        comment.getContent(),          // String content
+                        comment.getCreatedAt(),        // LocalDateTime createdAt
+                        comment.getUser().getUsername(), // String username
+                        comment.getUser().getUserId(), // Long userId
+                        post.getPostId()              // Long postId
+                ))
                 .collect(Collectors.toList());
 
         this.expenses = post.getTrip().getExpenses()
@@ -47,6 +69,7 @@ public class SharedPostDTO {
                 .collect(Collectors.toList());
     }
 
+    // Getters and Setters
     public Long getPostId() {
         return postId;
     }
@@ -77,6 +100,14 @@ public class SharedPostDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public Long getTripId() {

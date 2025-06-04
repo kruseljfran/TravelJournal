@@ -4,6 +4,7 @@ import com.example.travelJournal.dto.SharedPostDTO;
 import com.example.travelJournal.model.SharedPost;
 import com.example.travelJournal.service.SharedPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/shared-posts")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class SharedPostController {
 
     @Autowired
@@ -51,16 +53,24 @@ public class SharedPostController {
 
     // Keep POST/PUT returning full entity if needed for admin/dev use
     @PostMapping
-    public SharedPost createPost(@RequestBody SharedPost post) {
-        return sharedPostService.createPost(post);
+    public ResponseEntity<?> createPost(@RequestBody SharedPost post) {
+        try {
+            SharedPost createdPost = sharedPostService.createPost(post);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error creating post: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SharedPost> updatePost(@PathVariable Long id, @RequestBody SharedPost postDetails) {
+    public ResponseEntity<?> updatePost(@PathVariable Long id, @RequestBody SharedPost postDetails) {
         try {
-            return ResponseEntity.ok(sharedPostService.updatePost(id, postDetails));
+            SharedPost updatedPost = sharedPostService.updatePost(id, postDetails);
+            return ResponseEntity.ok(updatedPost);
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Error updating post: " + e.getMessage());
         }
     }
 
