@@ -4,7 +4,7 @@ function User({ currentUser }) {
     return (
       <div style={styles.container}>
         <div className="spinner"></div>
-        <p className="text-center">Loading profile...</p>
+        <p className="text-center">Učitavam profil...</p>
       </div>
     )
   }
@@ -13,8 +13,8 @@ function User({ currentUser }) {
     <div style={styles.container} className="container">
       <div className="fade-in">
         <div style={styles.header}>
-          <h1>My Profile</h1>
-          <p style={styles.subtitle}>Manage your travel journal account</p>
+          <h1>Moj profil</h1>
+          <p style={styles.subtitle}>Upravljajte svojim računom putnog dnevnika</p>
         </div>
 
         <div className="row">
@@ -24,7 +24,7 @@ function User({ currentUser }) {
                 {currentUser.profilePicture ? (
                   <img
                     src={currentUser.profilePicture || "/placeholder.svg"}
-                    alt="Profile"
+                    alt="Profil"
                     style={styles.profileImage}
                   />
                 ) : (
@@ -43,22 +43,22 @@ function User({ currentUser }) {
           <div className="col">
             <div className="card">
               <div className="card-header">
-                <h3 className="card-title">Account Information</h3>
+                <h3 className="card-title">Informacije o računu</h3>
               </div>
 
               <div style={styles.infoGrid}>
                 <div style={styles.infoItem}>
-                  <div style={styles.infoLabel}>📧 Email Address</div>
+                  <div style={styles.infoLabel}>📧 Email adresa</div>
                   <div style={styles.infoValue}>{currentUser.email}</div>
                 </div>
 
                 <div style={styles.infoItem}>
-                  <div style={styles.infoLabel}>👤 Username</div>
+                  <div style={styles.infoLabel}>👤 Korisničko ime</div>
                   <div style={styles.infoValue}>{currentUser.username}</div>
                 </div>
 
                 <div style={styles.infoItem}>
-                  <div style={styles.infoLabel}>🎭 Role</div>
+                  <div style={styles.infoLabel}>🎭 Uloga</div>
                   <div style={styles.infoValue}>
                     <span className={`badge ${currentUser.role === "admin" ? "badge-danger" : "badge-primary"}`}>
                       {currentUser.role}
@@ -67,9 +67,9 @@ function User({ currentUser }) {
                 </div>
 
                 <div style={styles.infoItem}>
-                  <div style={styles.infoLabel}>📅 Member Since</div>
+                  <div style={styles.infoLabel}>📅 Član od</div>
                   <div style={styles.infoValue}>
-                    {new Date(currentUser.createdAt).toLocaleDateString("en-US", {
+                    {new Date(currentUser.createdAt).toLocaleDateString("hr-HR", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
@@ -79,7 +79,7 @@ function User({ currentUser }) {
 
                 {currentUser.bio && (
                   <div style={styles.infoItem}>
-                    <div style={styles.infoLabel}>📝 Bio</div>
+                    <div style={styles.infoLabel}>📝 Biografija</div>
                     <div style={styles.infoValue}>{currentUser.bio}</div>
                   </div>
                 )}
@@ -88,21 +88,21 @@ function User({ currentUser }) {
 
             <div className="card">
               <div className="card-header">
-                <h3 className="card-title">Quick Actions</h3>
+                <h3 className="card-title">Brze akcije</h3>
               </div>
 
               <div style={styles.actionGrid}>
                 <button className="btn-primary" style={styles.actionButton}>
-                  ✏️ Edit Profile
+                  ✏️ Uredi profil
                 </button>
                 <button className="btn-secondary" style={styles.actionButton}>
-                  🔒 Change Password
+                  🔒 Promijeni lozinku
                 </button>
                 <button className="btn-success" style={styles.actionButton}>
-                  ➕ Create New Trip
+                  ➕ Stvori novo putovanje
                 </button>
                 <button className="btn-secondary" style={styles.actionButton}>
-                  📊 View Statistics
+                  📊 Pogledaj statistike
                 </button>
               </div>
             </div>
@@ -111,25 +111,25 @@ function User({ currentUser }) {
 
         <div className="card">
           <div className="card-header">
-            <h3 className="card-title">Account Statistics</h3>
+            <h3 className="card-title">Statistike računa</h3>
           </div>
 
           <div style={styles.statsGrid}>
             <div style={styles.statItem}>
               <div style={styles.statNumber}>0</div>
-              <div style={styles.statLabel}>Trips Created</div>
+              <div style={styles.statLabel}>Stvorenih putovanja</div>
             </div>
             <div style={styles.statItem}>
               <div style={styles.statNumber}>0</div>
-              <div style={styles.statLabel}>Posts Shared</div>
+              <div style={styles.statLabel}>Podijeljenih objava</div>
             </div>
             <div style={styles.statItem}>
               <div style={styles.statNumber}>0</div>
-              <div style={styles.statLabel}>Comments Made</div>
+              <div style={styles.statLabel}>Napisanih komentara</div>
             </div>
             <div style={styles.statItem}>
               <div style={styles.statNumber}>0</div>
-              <div style={styles.statLabel}>Countries Visited</div>
+              <div style={styles.statLabel}>Posjećenih zemalja</div>
             </div>
           </div>
         </div>

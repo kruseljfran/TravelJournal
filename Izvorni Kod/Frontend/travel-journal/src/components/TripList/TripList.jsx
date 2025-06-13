@@ -24,10 +24,10 @@ const TripList = ({ currentUser }) => {
         const data = await response.json()
         setTrips(data)
       } else {
-        setError("Failed to fetch trips")
+        setError("Neuspješno dohvaćanje putovanja")
       }
     } catch (err) {
-      setError("An error occurred while fetching trips")
+      setError("Dogodila se greška pri dohvaćanju putovanja")
     } finally {
       setLoading(false)
     }
@@ -51,7 +51,7 @@ const TripList = ({ currentUser }) => {
   }
 
   const handleDeleteTrip = async (tripId) => {
-    if (!window.confirm("Are you sure you want to delete this trip?")) {
+    if (!window.confirm("Jeste li sigurni da želite obrisati ovo putovanje?")) {
       return
     }
 
@@ -64,21 +64,16 @@ const TripList = ({ currentUser }) => {
       if (response.ok) {
         setTrips((prev) => prev.filter((trip) => trip.tripId !== tripId))
       } else {
-        setError("Failed to delete trip")
+        setError("Neuspješno brisanje putovanja")
       }
     } catch (err) {
-      setError("An error occurred while deleting the trip")
+      setError("Dogodila se greška pri brisanju putovanja")
     }
   }
 
   const handleCreatePost = async (tripId) => {
     const trip = trips.find((t) => t.tripId === tripId)
-    const content = `🌟 Just planned an amazing trip: "${trip.title}"! 
-📅 ${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}
-💰 Budget: $${trip.totalCost}
-📝 ${trip.description}
-
-#TravelPlanning #Adventure`
+    const content = `${trip.title}! ${trip.description}`
 
     try {
       // First, get the trip details to ensure we have the full object
@@ -87,7 +82,7 @@ const TripList = ({ currentUser }) => {
       })
 
       if (!tripResponse.ok) {
-        throw new Error("Failed to fetch trip details")
+        throw new Error("Neuspješno dohvaćanje detalja putovanja")
       }
 
       const tripData = await tripResponse.json()
@@ -109,20 +104,20 @@ const TripList = ({ currentUser }) => {
       })
 
       if (response.ok) {
-        alert("Trip shared successfully! Check the Home page to see your post.")
+        alert("Putovanje je uspješno podijeljeno! Provjerite početnu stranicu da vidite svoju objavu.")
       } else {
         const errorData = await response.text()
         console.error("Server error:", errorData)
-        setError(`Failed to create post: ${response.status}`)
+        setError(`Neuspješno stvaranje objave: ${response.status}`)
       }
     } catch (err) {
       console.error("Error sharing trip:", err)
-      setError(`An error occurred while creating the post: ${err.message}`)
+      setError(`Dogodila se greška pri stvaranju objave: ${err.message}`)
     }
   }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+    return new Date(dateString).toLocaleDateString("hr-HR", {
       year: "numeric",
       month: "long",
       day: "numeric",
@@ -141,7 +136,7 @@ const TripList = ({ currentUser }) => {
     return (
       <div style={styles.container} className="container">
         <div className="spinner"></div>
-        <p className="text-center">Loading your trips...</p>
+        <p className="text-center">Učitavam vaša putovanja...</p>
       </div>
     )
   }
@@ -150,8 +145,8 @@ const TripList = ({ currentUser }) => {
     <div style={styles.container} className="container">
       <div style={styles.header}>
         <div>
-          <h1>My Trips</h1>
-          <p style={styles.subtitle}>Manage your travel adventures</p>
+          <h1>Moja putovanja</h1>
+          <p style={styles.subtitle}>Upravljajte svojim putnim avanturama</p>
         </div>
         <button
           onClick={() => {
@@ -161,7 +156,7 @@ const TripList = ({ currentUser }) => {
           className="btn-primary"
           style={styles.createButton}
         >
-          ➕ Create New Trip
+          ➕ Stvori novo putovanje
         </button>
       </div>
 
@@ -169,8 +164,8 @@ const TripList = ({ currentUser }) => {
 
       {trips.length === 0 ? (
         <div className="card text-center" style={styles.emptyState}>
-          <h3>No trips yet</h3>
-          <p>Start planning your first adventure!</p>
+          <h3>Još nema putovanja</h3>
+          <p>Počnite planirati svoju prvu avanturu!</p>
           <button
             onClick={() => {
               setEditingTrip(null)
@@ -179,7 +174,7 @@ const TripList = ({ currentUser }) => {
             className="btn-primary"
             style={styles.emptyButton}
           >
-            Create Your First Trip
+            Stvorite svoje prvo putovanje
           </button>
         </div>
       ) : (
@@ -214,16 +209,16 @@ const TripList = ({ currentUser }) => {
 
                 <div style={styles.tripStats}>
                   <div style={styles.statItem}>
-                    <span style={styles.statLabel}>Duration</span>
-                    <span style={styles.statValue}>{calculateDuration(trip.startDate, trip.endDate)} days</span>
+                    <span style={styles.statLabel}>Trajanje</span>
+                    <span style={styles.statValue}>{calculateDuration(trip.startDate, trip.endDate)} dana</span>
                   </div>
                   <div style={styles.statItem}>
-                    <span style={styles.statLabel}>Budget</span>
+                    <span style={styles.statLabel}>Budžet</span>
                     <span style={styles.statValue}>${trip.totalCost}</span>
                   </div>
                   <div style={styles.statItem}>
-                    <span style={styles.statLabel}>Created</span>
-                    <span style={styles.statValue}>{new Date(trip.createdAt).toLocaleDateString()}</span>
+                    <span style={styles.statLabel}>Stvoreno</span>
+                    <span style={styles.statValue}>{new Date(trip.createdAt).toLocaleDateString("hr-HR")}</span>
                   </div>
                 </div>
 
@@ -233,7 +228,7 @@ const TripList = ({ currentUser }) => {
                     className="btn-success"
                     style={styles.shareButton}
                   >
-                    📤 Share Trip
+                    📤 Podijeli putovanje
                   </button>
                 </div>
               </div>

@@ -30,7 +30,7 @@ const LoginPage = ({ onLogin }) => {
       onLogin(user)
       navigate("/home")
     } else {
-      setError("Invalid username or password")
+      setError("Neispravno korisničko ime ili lozinka")
     }
   }
 
@@ -38,28 +38,28 @@ const LoginPage = ({ onLogin }) => {
     <div style={styles.container}>
       <div style={styles.loginCard} className="card fade-in">
         <div className="card-header text-center">
-          <h1 style={styles.title}>Travel Journal</h1>
-          <p style={styles.subtitle}>Sign in to your account</p>
+          <h1 style={styles.title}>Putni dnevnik</h1>
+          <p style={styles.subtitle}>Prijavite se na svoj račun</p>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Username</label>
+            <label className="form-label">Korisničko ime</label>
             <input
               type="text"
               value={username}
-              placeholder="Enter your username"
+              placeholder="Unesite korisničko ime"
               onChange={(e) => setUsername(e.target.value)}
               required
             />
           </div>
 
           <div className="form-group">
-            <label className="form-label">Password</label>
+            <label className="form-label">Lozinka</label>
             <input
               type="password"
               value={password}
-              placeholder="Enter your password"
+              placeholder="Unesite lozinku"
               onChange={(e) => setPassword(e.target.value)}
               required
             />
@@ -68,7 +68,7 @@ const LoginPage = ({ onLogin }) => {
           {error && <div className="alert alert-danger">{error}</div>}
 
           <button type="submit" className="btn-primary" style={styles.submitButton}>
-            Sign In
+            Prijavite se
           </button>
         </form>
       </div>
