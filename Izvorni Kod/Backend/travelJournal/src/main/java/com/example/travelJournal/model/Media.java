@@ -20,14 +20,27 @@ public class Media {
     @Column(nullable = false)
     private LocalDate uploadedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tripId", nullable = false)
     private Trip trip;
 
-    @ManyToOne
-    @JoinColumn(name = "locationId")
+    // N to 0...1 relationship with Location
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "locationId", nullable = true)
     private Location location;
 
+    // Constructors
+    public Media() {}
+
+    public Media(String filePath, String mediaType, LocalDate uploadedAt, Trip trip, Location location) {
+        this.filePath = filePath;
+        this.mediaType = mediaType;
+        this.uploadedAt = uploadedAt;
+        this.trip = trip;
+        this.location = location;
+    }
+
+    // Getters and Setters
     public Long getMediaId() {
         return mediaId;
     }

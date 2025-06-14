@@ -1,6 +1,7 @@
 package com.example.travelJournal.dto;
 
 public class ExpenseDTO {
+    private Long expenseId;
     private String category;
     private Integer amount;
     private String currency;
@@ -11,6 +12,24 @@ public class ExpenseDTO {
         this.amount = amount;
         this.currency = currency;
         this.description = description;
+    }
+
+    // Add a new constructor that takes an Expense object
+    public ExpenseDTO(com.example.travelJournal.model.Expense expense) {
+        this.expenseId = expense.getExpenseId(); // Add this line to include the ID
+        this.category = expense.getCategory();
+        this.amount = expense.getAmount();
+        this.currency = expense.getCurrency();
+        this.description = expense.getDescription();
+    }
+
+    // Add getter and setter for expenseId
+    public Long getExpenseId() {
+        return expenseId;
+    }
+
+    public void setExpenseId(Long expenseId) {
+        this.expenseId = expenseId;
     }
 
     public String getCategory() {

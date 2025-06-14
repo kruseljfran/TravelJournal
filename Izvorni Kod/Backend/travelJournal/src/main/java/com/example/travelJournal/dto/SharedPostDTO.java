@@ -1,12 +1,14 @@
 package com.example.travelJournal.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.example.travelJournal.model.Expense;
 import com.example.travelJournal.model.Media;
 import com.example.travelJournal.model.SharedPost;
+import com.example.travelJournal.model.WasLocation;
 
 public class SharedPostDTO {
     private Long postId;
@@ -15,9 +17,10 @@ public class SharedPostDTO {
     private String username;
     private Long userId;
     private Long tripId;
-    private List<String> mediaPaths;
+    private List<MediaDTO> mediaPaths; // Changed from List<String> to List<MediaDTO>
     private List<CommentDTO> comments;
     private List<ExpenseDTO> expenses;
+    private List<LocationDTO> locations;
 
     // Default constructor
     public SharedPostDTO() {}
@@ -41,24 +44,26 @@ public class SharedPostDTO {
         this.userId = post.getUser().getUserId();
         this.tripId = post.getTrip().getTripId();
 
+        // Map media with full MediaDTO objects (including locationId)
         this.mediaPaths = post.getTrip().getMediaList()
                 .stream()
-                .map(Media::getFilePath)
+                .map(MediaDTO::new)
                 .collect(Collectors.toList());
 
-        // ✅ Fixed parameter order to match CommentDTO constructor
+        // Map comments
         this.comments = post.getCommentList()
                 .stream()
                 .map(comment -> new CommentDTO(
-                        comment.getCommentId(),        // Long commentId
-                        comment.getContent(),          // String content
-                        comment.getCreatedAt(),        // LocalDateTime createdAt
-                        comment.getUser().getUsername(), // String username
-                        comment.getUser().getUserId(), // Long userId
-                        post.getPostId()              // Long postId
+                        comment.getCommentId(),
+                        comment.getContent(),
+                        comment.getCreatedAt(),
+                        comment.getUser().getUsername(),
+                        comment.getUser().getUserId(),
+                        post.getPostId()
                 ))
                 .collect(Collectors.toList());
 
+        // Map expenses
         this.expenses = post.getTrip().getExpenses()
                 .stream()
                 .map(expense -> new ExpenseDTO(
@@ -67,6 +72,54 @@ public class SharedPostDTO {
                         expense.getCurrency(),
                         expense.getDescription()))
                 .collect(Collectors.toList());
+
+        // Map locations with WasLocation data and associated media
+        this.locations = new ArrayList<>();
+
+        // Get WasLocation entries for this trip
+        List<WasLocation> wasLocations = post.getTrip().getWasLocations();
+
+        if (wasLocations != null) {
+            this.locations = wasLocations.stream()
+                    .map(wasLocation -> {
+                        // Get the location from WasLocation
+                        var location = wasLocation.getLocation();
+
+                        // Check if location is not null
+                        if (location != null) {
+                            LocationDTO locationDTO = new LocationDTO(
+                                    location.getLocationId(),
+                                    location.getName(),
+//                                    location.getLatitude(),
+//                                    location.getLongitude(),
+                                    // Use the correct property names for Country and Place
+                                    location.getCountry() != null ? location.getCountry().getCountryName() : null,
+                                    location.getPlace() != null ? location.getPlace().getPlaceName() : null,
+                                    wasLocation.getVisitedOn(),
+                                    wasLocation.getNotes(),
+                                    wasLocation.getVibeRating(),
+                                    wasLocation.getFoodRating(),
+                                    wasLocation.getWorthItRating()
+                            );
+
+                            // Add media associated with this location
+                            List<MediaDTO> locationMedia = post.getTrip().getMediaList()
+                                    .stream()
+                                    .filter(media -> media.getLocation() != null &&
+                                            media.getLocation().getLocationId().equals(location.getLocationId()))
+                                    .map(MediaDTO::new)
+                                    .collect(Collectors.toList());
+
+                            locationDTO.setMedia(locationMedia);
+
+                            return locationDTO;
+                        } else {
+                            return null;
+                        }
+                    })
+                    .filter(locationDTO -> locationDTO != null) // Filter out null entries
+                    .collect(Collectors.toList());
+        }
     }
 
     // Getters and Setters
@@ -118,11 +171,11 @@ public class SharedPostDTO {
         this.tripId = tripId;
     }
 
-    public List<String> getMediaPaths() {
+    public List<MediaDTO> getMediaPaths() {
         return mediaPaths;
     }
 
-    public void setMediaPaths(List<String> mediaPaths) {
+    public void setMediaPaths(List<MediaDTO> mediaPaths) {
         this.mediaPaths = mediaPaths;
     }
 
@@ -140,5 +193,13 @@ public class SharedPostDTO {
 
     public void setExpenses(List<ExpenseDTO> expenses) {
         this.expenses = expenses;
+    }
+
+    public List<LocationDTO> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(List<LocationDTO> locations) {
+        this.locations = locations;
     }
 }

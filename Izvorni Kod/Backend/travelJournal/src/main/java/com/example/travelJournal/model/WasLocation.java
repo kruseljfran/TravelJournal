@@ -2,9 +2,11 @@ package com.example.travelJournal.model;
 
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
+@IdClass(WasLocationId.class)
 @Table(name = "waslocation")
 public class WasLocation {
 
@@ -24,13 +26,13 @@ public class WasLocation {
     @Column(nullable = false)
     private String notes;
 
-    @Column(nullable = false)
+    @Column(nullable = true) // Allow null ratings
     private Integer vibeRating;
 
-    @Column(nullable = false)
+    @Column(nullable = true) // Allow null ratings
     private Integer foodRating;
 
-    @Column(nullable = false)
+    @Column(nullable = true) // Allow null ratings
     private Integer worthItRating;
 
     public Trip getTrip() {

@@ -1,6 +1,7 @@
 package com.example.travelJournal.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "location")
@@ -13,35 +14,13 @@ public class Location {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String latitude;
-
-    @Column(nullable = false)
-    private String longitude;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "placeId")
     private Place place;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "countryId")
     private Country country;
-
-    public Long getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(Long locationId) {
-        this.locationId = locationId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getLatitude() {
         return latitude;
@@ -59,6 +38,46 @@ public class Location {
         this.longitude = longitude;
     }
 
+    @Column(nullable = false)
+    private String latitude;
+
+    @Column(nullable = false)
+    private String longitude;
+
+    // One Location can have many Media (1 to N relationship)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Media> mediaList;
+
+    // One Location can be visited in many trips (1 to N relationship through WasLocation)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WasLocation> wasLocationList;
+
+    // Constructors
+    public Location() {}
+
+    public Location(String name, Place place, Country country) {
+        this.name = name;
+        this.place = place;
+        this.country = country;
+    }
+
+    // Getters and Setters
+    public Long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Place getPlace() {
         return place;
     }
@@ -73,5 +92,21 @@ public class Location {
 
     public void setCountry(Country country) {
         this.country = country;
+    }
+
+    public List<Media> getMediaList() {
+        return mediaList;
+    }
+
+    public void setMediaList(List<Media> mediaList) {
+        this.mediaList = mediaList;
+    }
+
+    public List<WasLocation> getWasLocationList() {
+        return wasLocationList;
+    }
+
+    public void setWasLocationList(List<WasLocation> wasLocationList) {
+        this.wasLocationList = wasLocationList;
     }
 }

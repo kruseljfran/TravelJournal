@@ -35,6 +35,15 @@ public class Trip {
     @JoinColumn(name = "userId", nullable = false)
     private TJUser user;
 
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Media> mediaList;
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Expense> expenses;
+
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WasLocation> wasLocations;
+
     public Long getTripId() {
         return tripId;
     }
@@ -99,9 +108,6 @@ public class Trip {
         this.user = user;
     }
 
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Media> mediaList;
-
     public List<Media> getMediaList() {
         return mediaList;
     }
@@ -109,9 +115,6 @@ public class Trip {
     public void setMediaList(List<Media> mediaList) {
         this.mediaList = mediaList;
     }
-
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Expense> expenses;
 
     public List<Expense> getExpenses() {
         return expenses;
@@ -121,5 +124,11 @@ public class Trip {
         this.expenses = expenses;
     }
 
-}
+    public List<WasLocation> getWasLocations() {
+        return wasLocations;
+    }
 
+    public void setWasLocations(List<WasLocation> wasLocations) {
+        this.wasLocations = wasLocations;
+    }
+}
