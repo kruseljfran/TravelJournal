@@ -1,0 +1,109 @@
+CREATE TABLE Korisnik (
+  korisnikId SERIAL PRIMARY KEY,
+  korisnickoIme TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE,
+  lozinka TEXT NOT NULL,
+  ime TEXT,
+  prezime TEXT,
+  datumRegistracije TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Putovanje (
+  putovanjeId SERIAL PRIMARY KEY,
+  naziv TEXT NOT NULL,
+  opis TEXT,
+  datumPocetka DATE NOT NULL,
+  datumZavrsetka DATE NOT NULL,
+  ukupniTrosak DECIMAL(10,2) DEFAULT 0,
+  datumKreiranja TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  korisnikId INT NOT NULL,
+  FOREIGN KEY (korisnikId) REFERENCES Korisnik(korisnikId) ON DELETE CASCADE
+);
+
+CREATE TABLE Zemlja (
+  zemljaId SERIAL PRIMARY KEY,
+  nazivZemlje TEXT NOT NULL UNIQUE,
+  kodZemlje TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE Mjesto (
+  mjestoId SERIAL PRIMARY KEY,
+  nazivMjesta TEXT NOT NULL,
+  tipMjesta TEXT,
+  zemljaId INT NOT NULL,
+  FOREIGN KEY (zemljaId) REFERENCES Zemlja(zemljaId) ON DELETE CASCADE
+);
+
+CREATE TABLE Lokacija (
+  lokacijaId SERIAL PRIMARY KEY,
+  nazivLokacije TEXT NOT NULL,
+  opis TEXT,
+  geografskaSirina DECIMAL(10,8),
+  geografskaDuzina DECIMAL(11,8),
+  mjestoId INT,
+  zemljaId INT,
+  FOREIGN KEY (mjestoId) REFERENCES Mjesto(mjestoId) ON DELETE SET NULL,
+  FOREIGN KEY (zemljaId) REFERENCES Zemlja(zemljaId) ON DELETE SET NULL
+);
+
+CREATE TABLE BioLokacija (
+  bioLokacijaId SERIAL PRIMARY KEY,
+  putovanjeId INT NOT NULL,
+  lokacijaId INT NOT NULL,
+  datumPosjete DATE,
+  napomene TEXT,
+  FOREIGN KEY (putovanjeId) REFERENCES Putovanje(putovanjeId) ON DELETE CASCADE,
+  FOREIGN KEY (lokacijaId) REFERENCES Lokacija(lokacijaId) ON DELETE CASCADE
+);
+
+CREATE TABLE Trosak (
+  trosakId SERIAL PRIMARY KEY,
+  kategorija TEXT NOT NULL,
+  iznos DECIMAL(10,2) NOT NULL,
+  valuta TEXT NOT NULL DEFAULT 'EUR',
+  opis TEXT,
+  datum DATE NOT NULL,
+  putovanjeId INT NOT NULL,
+  FOREIGN KEY (putovanjeId) REFERENCES Putovanje(putovanjeId) ON DELETE CASCADE
+);
+
+CREATE TABLE Medij (
+  medijId SERIAL PRIMARY KEY,
+  tipMedija TEXT NOT NULL,
+  putanja TEXT NOT NULL,
+  opis TEXT,
+  datumDodavanja TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  putovanjeId INT NOT NULL,
+  lokacijaId INT,
+  FOREIGN KEY (putovanjeId) REFERENCES Putovanje(putovanjeId) ON DELETE CASCADE,
+  FOREIGN KEY (lokacijaId) REFERENCES Lokacija(lokacijaId) ON DELETE SET NULL
+);
+
+CREATE TABLE DijeljenaObjava (
+  dijeljenaObjavaId SERIAL PRIMARY KEY,
+  naslov TEXT NOT NULL,
+  sadrzaj TEXT NOT NULL,
+  datumDijeljenja TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  putovanjeId INT NOT NULL,
+  FOREIGN KEY (putovanjeId) REFERENCES Putovanje(putovanjeId) ON DELETE CASCADE
+);
+
+CREATE TABLE Komentar (
+  komentarId SERIAL PRIMARY KEY,
+  sadrzaj TEXT NOT NULL,
+  datumKomentara TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  korisnikId INT NOT NULL,
+  dijeljenaObjavaId INT NOT NULL,
+  FOREIGN KEY (korisnikId) REFERENCES Korisnik(korisnikId) ON DELETE CASCADE,
+  FOREIGN KEY (dijeljenaObjavaId) REFERENCES DijeljenaObjava(dijeljenaObjavaId) ON DELETE CASCADE
+);
+
+CREATE TABLE JeDijeljeno (
+  jeDijeljenoId SERIAL PRIMARY KEY,
+  korisnikId INT NOT NULL,
+  dijeljenaObjavaId INT NOT NULL,
+  datumDijeljenja TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(korisnikId, dijeljenaObjavaId),
+  FOREIGN KEY (korisnikId) REFERENCES Korisnik(korisnikId) ON DELETE CASCADE,
+  FOREIGN KEY (dijeljenaObjavaId) REFERENCES DijeljenaObjava(dijeljenaObjavaId) ON DELETE CASCADE
+);
