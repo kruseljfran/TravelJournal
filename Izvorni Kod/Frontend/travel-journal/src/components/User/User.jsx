@@ -1,4 +1,68 @@
+"use client"
+
+import { useState, useEffect } from "react"
+
 function User({ currentUser }) {
+  const [stats, setStats] = useState({
+    tripsCount: 0,
+    sharedPostsCount: 0,
+    commentsCount: 0,
+    countriesCount: 0,
+    loading: true,
+  })
+
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      if (!currentUser?.id) return
+
+      try {
+        const token = localStorage.getItem("token")
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        }
+
+        // Fetch trips count
+        const tripsResponse = await fetch(`http://localhost:8080/api/trips/user/${currentUser.id}`, { headers })
+        const trips = tripsResponse.ok ? await tripsResponse.json() : []
+
+        // Fetch shared posts count
+        const postsResponse = await fetch("http://localhost:8080/api/shared-posts", { headers })
+        const allPosts = postsResponse.ok ? await postsResponse.json() : []
+        const userPosts = allPosts.filter((post) => post.userId === currentUser.id)
+
+        // Fetch comments count (assuming there's an endpoint)
+        const commentsResponse = await fetch(`http://localhost:8080/api/comments/user/${currentUser.id}`, { headers })
+        const comments = commentsResponse.ok ? await commentsResponse.json() : []
+
+        // Calculate unique countries from trips
+        const uniqueCountries = new Set()
+        trips.forEach((trip) => {
+          if (trip.locations) {
+            trip.locations.forEach((location) => {
+              if (location.country) {
+                uniqueCountries.add(location.country)
+              }
+            })
+          }
+        })
+
+        setStats({
+          tripsCount: trips.length,
+          sharedPostsCount: userPosts.length,
+          commentsCount: comments.length,
+          countriesCount: uniqueCountries.size,
+          loading: false,
+        })
+      } catch (error) {
+        console.error("Error fetching user stats:", error)
+        setStats((prev) => ({ ...prev, loading: false }))
+      }
+    }
+
+    fetchUserStats()
+  }, [currentUser?.id])
+
   // Check if currentUser exists
   if (!currentUser) {
     return (
@@ -23,7 +87,7 @@ function User({ currentUser }) {
               <div style={styles.avatarContainer}>
                 {currentUser.profilePicture ? (
                   <img
-                    src={currentUser.profilePicture || "/placeholder.svg"}
+                    src={"/uploads/" + currentUser.profilePicture || "/placeholder.svg"}
                     alt="Profil"
                     style={styles.profileImage}
                   />
@@ -85,27 +149,6 @@ function User({ currentUser }) {
                 )}
               </div>
             </div>
-
-            <div className="card">
-              <div className="card-header">
-                <h3 className="card-title">Brze akcije</h3>
-              </div>
-
-              <div style={styles.actionGrid}>
-                <button className="btn-primary" style={styles.actionButton}>
-                  ✏️ Uredi profil
-                </button>
-                <button className="btn-secondary" style={styles.actionButton}>
-                  🔒 Promijeni lozinku
-                </button>
-                <button className="btn-success" style={styles.actionButton}>
-                  ➕ Stvori novo putovanje
-                </button>
-                <button className="btn-secondary" style={styles.actionButton}>
-                  📊 Pogledaj statistike
-                </button>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -116,19 +159,19 @@ function User({ currentUser }) {
 
           <div style={styles.statsGrid}>
             <div style={styles.statItem}>
-              <div style={styles.statNumber}>0</div>
+              <div style={styles.statNumber}>{stats.loading ? "..." : stats.tripsCount}</div>
               <div style={styles.statLabel}>Stvorenih putovanja</div>
             </div>
             <div style={styles.statItem}>
-              <div style={styles.statNumber}>0</div>
+              <div style={styles.statNumber}>{stats.loading ? "..." : stats.sharedPostsCount}</div>
               <div style={styles.statLabel}>Podijeljenih objava</div>
             </div>
             <div style={styles.statItem}>
-              <div style={styles.statNumber}>0</div>
+              <div style={styles.statNumber}>{stats.loading ? "..." : stats.commentsCount}</div>
               <div style={styles.statLabel}>Napisanih komentara</div>
             </div>
             <div style={styles.statItem}>
-              <div style={styles.statNumber}>0</div>
+              <div style={styles.statNumber}>{stats.loading ? "..." : stats.countriesCount}</div>
               <div style={styles.statLabel}>Posjećenih zemalja</div>
             </div>
           </div>
@@ -150,7 +193,7 @@ const styles = {
   },
   subtitle: {
     fontSize: "1.1rem",
-    color: "#6c757d",
+    color: "rgb(73, 80, 87)",
     marginBottom: "0",
   },
   avatarCard: {

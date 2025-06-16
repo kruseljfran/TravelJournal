@@ -169,7 +169,7 @@ const TripForm = ({ onTripCreated, onCancel, initialTrip = null }) => {
               </div>
 
               <div className="form-group">
-                <label className="form-label">Ukupni budžet (USD)</label>
+                <label className="form-label">Ukupni budžet</label>
                 <input
                   type="number"
                   name="totalCost"

@@ -4,7 +4,9 @@ import "./App.css"
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { useState, useEffect } from "react"
 import SharedPosts from "./components/SharedPosts/SharedPosts"
+import PostDetail from "./components/PostDetail/PostDetail"
 import LoginPage from "./components/LoginPage/LoginPage"
+import RegisterPage from "./components/RegisterPage/RegisterPage"
 import Header from "./components/Header/Header"
 import User from "./components/User/User"
 import TripList from "./components/TripList/TripList"
@@ -49,10 +51,19 @@ function App() {
               element={currentUser ? <Navigate to="/home" replace /> : <LoginPage onLogin={setCurrentUser} />}
             />
 
+            {/* Register route */}
+            <Route path="/register" element={currentUser ? <Navigate to="/home" replace /> : <RegisterPage />} />
+
             {/* Home route */}
             <Route
               path="/home"
               element={currentUser ? <SharedPosts currentUser={currentUser} /> : <Navigate to="/login" replace />}
+            />
+
+            {/* Post detail route */}
+            <Route
+              path="/post/:postId"
+              element={currentUser ? <PostDetail currentUser={currentUser} /> : <Navigate to="/login" replace />}
             />
 
             {/* Trips route */}

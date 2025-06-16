@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 const API_BASE = "http://localhost:8080/api"
 
@@ -71,6 +71,15 @@ const LoginPage = ({ onLogin }) => {
             Prijavite se
           </button>
         </form>
+
+        <div style={styles.registerLink}>
+          <p>
+            Nemate račun?{" "}
+            <Link to="/register" style={styles.link}>
+              Registrirajte se
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -99,6 +108,17 @@ const styles = {
     width: "100%",
     padding: "12px",
     fontSize: "16px",
+    fontWeight: "600",
+  },
+  registerLink: {
+    textAlign: "center",
+    marginTop: "20px",
+    paddingTop: "20px",
+    borderTop: "1px solid #e9ecef",
+  },
+  link: {
+    color: "#007bff",
+    textDecoration: "none",
     fontWeight: "600",
   },
 }
