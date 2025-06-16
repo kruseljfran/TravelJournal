@@ -1,6 +1,7 @@
 package com.example.travelJournal.controller;
 
 import com.example.travelJournal.dto.LoginRequestDTO;
+import com.example.travelJournal.dto.RegisterRequestDTO;
 import com.example.travelJournal.model.TJUser;
 import com.example.travelJournal.repository.TJUserRepository;
 import com.example.travelJournal.service.TJUserService;
@@ -42,6 +43,40 @@ public class AuthController {
         return ResponseEntity.status(401).body("Invalid credentials");
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequest) {
+        try {
+            // Check if username already exists
+            if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+                return ResponseEntity.status(400).body("Korisničko ime već postoji");
+            }
+
+            // Check if email already exists
+            if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
+                return ResponseEntity.status(400).body("Email već postoji");
+            }
+
+            // Create new user
+            TJUser newUser = new TJUser();
+            newUser.setUsername(registerRequest.getUsername());
+            newUser.setEmail(registerRequest.getEmail());
+            newUser.setPasswordHash(registerRequest.getPassword()); // In production, hash this!
+            newUser.setRole("USER");
+
+            TJUser savedUser = userRepository.save(newUser);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Registracija uspješna");
+            response.put("userId", savedUser.getUserId());
+            response.put("username", savedUser.getUsername());
+
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Greška pri registraciji: " + e.getMessage());
+        }
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<String> logout(HttpSession session) {
         session.invalidate();
@@ -66,6 +101,4 @@ public class AuthController {
             return ResponseEntity.status(401).body("Not logged in");
         }
     }
-
 }
-
