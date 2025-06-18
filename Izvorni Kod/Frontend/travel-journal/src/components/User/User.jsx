@@ -13,45 +13,100 @@ function User({ currentUser }) {
 
   useEffect(() => {
     const fetchUserStats = async () => {
-      if (!currentUser?.id) return
+      if (!currentUser?.userId) {
+        setStats((prev) => ({ ...prev, loading: false }))
+        return
+      }
 
       try {
-        const token = localStorage.getItem("token")
-        const headers = {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+        let tripsCount = 0
+        let sharedPostsCount = 0
+        let commentsCount = 0
+        const countriesSet = new Set()
+
+        // Fetch user's trips
+        try {
+          const tripsResponse = await fetch(`http://localhost:8080/api/trips/user/${currentUser.userId}`, {
+            credentials: "include",
+          })
+          if (tripsResponse.ok) {
+            const trips = await tripsResponse.json()
+            tripsCount = trips.length
+            console.log("Trips found:", trips.length)
+
+            // For each trip, get its locations and count unique countries
+            for (const trip of trips) {
+              try {
+                const locationsResponse = await fetch(`http://localhost:8080/api/locations/trip/${trip.tripId}`, {
+                  credentials: "include",
+                })
+                if (locationsResponse.ok) {
+                  const locations = await locationsResponse.json()
+                  console.log(`Trip ${trip.tripId} has ${locations.length} locations`)
+
+                  locations.forEach((location) => {
+                    if (location.countryName) {
+                      countriesSet.add(location.countryName)
+                      console.log(`Added country: ${location.countryName}`)
+                    }
+                  })
+                }
+              } catch (error) {
+                console.error(`Error fetching locations for trip ${trip.tripId}:`, error)
+              }
+            }
+
+            console.log("Unique countries visited:", Array.from(countriesSet))
+          }
+        } catch (error) {
+          console.error("Error fetching trips:", error)
         }
 
-        // Fetch trips count
-        const tripsResponse = await fetch(`http://localhost:8080/api/trips/user/${currentUser.id}`, { headers })
-        const trips = tripsResponse.ok ? await tripsResponse.json() : []
-
-        // Fetch shared posts count
-        const postsResponse = await fetch("http://localhost:8080/api/shared-posts", { headers })
-        const allPosts = postsResponse.ok ? await postsResponse.json() : []
-        const userPosts = allPosts.filter((post) => post.userId === currentUser.id)
-
-        // Fetch comments count (assuming there's an endpoint)
-        const commentsResponse = await fetch(`http://localhost:8080/api/comments/user/${currentUser.id}`, { headers })
-        const comments = commentsResponse.ok ? await commentsResponse.json() : []
-
-        // Calculate unique countries from trips
-        const uniqueCountries = new Set()
-        trips.forEach((trip) => {
-          if (trip.locations) {
-            trip.locations.forEach((location) => {
-              if (location.country) {
-                uniqueCountries.add(location.country)
-              }
-            })
+        // Fetch all shared posts and filter by user
+        try {
+          const postsResponse = await fetch(`http://localhost:8080/api/shared-posts`, {
+            credentials: "include",
+          })
+          if (postsResponse.ok) {
+            const allPosts = await postsResponse.json()
+            const userPosts = allPosts.filter((post) => post.userId === currentUser.userId)
+            sharedPostsCount = userPosts.length
+            console.log("Shared posts found:", userPosts.length)
           }
-        })
+        } catch (error) {
+          console.error("Error fetching shared posts:", error)
+        }
+
+        // Fetch user's comments using the specific endpoint
+        try {
+          const commentsResponse = await fetch(`http://localhost:8080/api/comments/user/${currentUser.userId}`, {
+            credentials: "include",
+          })
+
+          if (commentsResponse.ok) {
+            const responseText = await commentsResponse.text()
+            console.log("Raw comments response:", responseText)
+
+            try {
+              const userComments = JSON.parse(responseText)
+              commentsCount = Array.isArray(userComments) ? userComments.length : 0
+              console.log("Comments found:", commentsCount)
+            } catch (parseError) {
+              console.error("Error parsing comments JSON:", parseError)
+              console.error("Response text:", responseText)
+            }
+          } else {
+            console.log("Comments endpoint returned status:", commentsResponse.status)
+          }
+        } catch (error) {
+          console.error("Error fetching comments:", error)
+        }
 
         setStats({
-          tripsCount: trips.length,
-          sharedPostsCount: userPosts.length,
-          commentsCount: comments.length,
-          countriesCount: uniqueCountries.size,
+          tripsCount,
+          sharedPostsCount,
+          commentsCount,
+          countriesCount: countriesSet.size,
           loading: false,
         })
       } catch (error) {
@@ -61,7 +116,7 @@ function User({ currentUser }) {
     }
 
     fetchUserStats()
-  }, [currentUser?.id])
+  }, [currentUser?.userId])
 
   // Check if currentUser exists
   if (!currentUser) {
@@ -193,7 +248,7 @@ const styles = {
   },
   subtitle: {
     fontSize: "1.1rem",
-    color: "rgb(73, 80, 87)",
+    color: "#6c757d",
     marginBottom: "0",
   },
   avatarCard: {
@@ -251,16 +306,6 @@ const styles = {
   infoValue: {
     color: "#2d3748",
     fontSize: "0.95rem",
-  },
-  actionGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-    gap: "12px",
-  },
-  actionButton: {
-    padding: "12px 16px",
-    fontSize: "0.9rem",
-    fontWeight: "500",
   },
   statsGrid: {
     display: "grid",

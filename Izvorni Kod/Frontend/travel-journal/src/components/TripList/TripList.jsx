@@ -74,12 +74,7 @@ const TripList = ({ currentUser }) => {
 
   const handleCreatePost = async (tripId) => {
     const trip = trips.find((t) => t.tripId === tripId)
-    const content = `🌟 Upravo sam planirao/la nevjerojatno putovanje: "${trip.title}"! 
-📅 ${formatDate(trip.startDate)} - ${formatDate(trip.endDate)}
-💰 Budžet: $${trip.totalCost}
-📝 ${trip.description}
-
-#PlaniranjePutovanja #Avantura`
+    const content = `${trip.title}! ${trip.description}`
 
     try {
       // First, get the trip details to ensure we have the full object
