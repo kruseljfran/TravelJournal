@@ -1,6 +1,7 @@
 package com.example.travelJournal.service;
 
 import com.example.travelJournal.dto.CommentCreateDTO;
+import com.example.travelJournal.dto.CommentDTO;
 import com.example.travelJournal.model.Comment;
 import com.example.travelJournal.model.SharedPost;
 import com.example.travelJournal.model.TJUser;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -26,23 +28,29 @@ public class CommentService {
     @Autowired
     private SharedPostRepository postRepository;
 
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
+    public List<CommentDTO> getAllComments() {
+        return commentRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public Optional<Comment> getCommentById(Long id) {
         return commentRepository.findById(id);
     }
 
-    public List<Comment> getCommentsByPostId(Long postId) {
-        return commentRepository.findByPost_PostId(postId);
+    public List<CommentDTO> getCommentsByPostId(Long postId) {
+        return commentRepository.findByPost_PostId(postId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Comment> getCommentsByUserId(Long userId) {
-        return commentRepository.findByUser_UserId(userId);
+    public List<CommentDTO> getCommentsByUserId(Long userId) {
+        return commentRepository.findByUser_UserId(userId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Comment createComment(CommentCreateDTO dto) {
+    public CommentDTO createComment(CommentCreateDTO dto) {
         TJUser user = userRepository.findById(dto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -55,7 +63,8 @@ public class CommentService {
         comment.setContent(dto.getContent());
         comment.setCreatedAt(LocalDateTime.now());
 
-        return commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
+        return convertToDTO(savedComment);
     }
 
     public void deleteComment(Long id) {
@@ -69,12 +78,6 @@ public class CommentService {
         }).orElseThrow(() -> new RuntimeException("Comment not found"));
     }
 
-    /**
-     * Check if a user can delete a comment
-     * User can delete if:
-     * 1. They are the author of the comment, OR
-     * 2. They are the author of the post that the comment is on
-     */
     public boolean canUserDeleteComment(Long commentId, Long userId) {
         Optional<Comment> commentOpt = commentRepository.findById(commentId);
         if (commentOpt.isEmpty()) {
@@ -83,16 +86,25 @@ public class CommentService {
 
         Comment comment = commentOpt.get();
 
-        // User can delete their own comment
         if (comment.getUser().getUserId().equals(userId)) {
             return true;
         }
 
-        // User can delete any comment on their own post
         if (comment.getPost().getUser().getUserId().equals(userId)) {
             return true;
         }
 
         return false;
+    }
+
+    private CommentDTO convertToDTO(Comment comment) {
+        return new CommentDTO(
+                comment.getCommentId(),
+                comment.getContent(),
+                comment.getCreatedAt(),
+                comment.getUser().getUserId(),
+                comment.getUser().getUsername(),
+                comment.getPost().getPostId()
+        );
     }
 }

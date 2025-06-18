@@ -6,12 +6,23 @@ public class CommentDTO {
     private Long commentId;
     private String content;
     private LocalDateTime createdAt;
-    private String username;
     private Long userId;
+    private String username;
     private Long postId;
 
-    // Constructors
+    // Default constructor
     public CommentDTO() {}
+
+    // Constructor with all fields
+    public CommentDTO(Long commentId, String content, LocalDateTime createdAt,
+                      Long userId, String username, Long postId) {
+        this.commentId = commentId;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.userId = userId;
+        this.username = username;
+        this.postId = postId;
+    }
 
     public CommentDTO(Long commentId, String content, LocalDateTime createdAt, String username, Long userId, Long postId) {
         this.commentId = commentId;
@@ -22,7 +33,7 @@ public class CommentDTO {
         this.postId = postId;
     }
 
-    // Getters and Setters
+    // Getters and setters
     public Long getCommentId() {
         return commentId;
     }
@@ -47,20 +58,20 @@ public class CommentDTO {
         this.createdAt = createdAt;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public Long getUserId() {
         return userId;
     }
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getPostId() {
