@@ -44,15 +44,14 @@ public class Location {
     @Column(nullable = false)
     private String longitude;
 
-    // One Location can have many Media (1 to N relationship)
+    // 1 to N
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Media> mediaList;
 
-    // One Location can be visited in many trips (1 to N relationship through WasLocation)
+    // 1 to N
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WasLocation> wasLocationList;
 
-    // Constructors
     public Location() {}
 
     public Location(String name, Place place, Country country) {
@@ -61,7 +60,6 @@ public class Location {
         this.country = country;
     }
 
-    // Getters and Setters
     public Long getLocationId() {
         return locationId;
     }

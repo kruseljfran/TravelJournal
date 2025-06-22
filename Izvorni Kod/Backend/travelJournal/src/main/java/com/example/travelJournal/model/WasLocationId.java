@@ -7,7 +7,6 @@ public class WasLocationId implements Serializable {
     private Long trip;
     private Long location;
 
-    // Required: equals() and hashCode()
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

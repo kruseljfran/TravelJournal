@@ -26,13 +26,13 @@ public class WasLocation {
     @Column(nullable = false)
     private String notes;
 
-    @Column(nullable = true) // Allow null ratings
+    @Column(nullable = true) // dopusti null
     private Integer vibeRating;
 
-    @Column(nullable = true) // Allow null ratings
+    @Column(nullable = true)
     private Integer foodRating;
 
-    @Column(nullable = true) // Allow null ratings
+    @Column(nullable = true)
     private Integer worthItRating;
 
     public Trip getTrip() {

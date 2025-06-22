@@ -56,7 +56,6 @@ public class LocationService {
                                     ", Location: " + (wasLocation != null && wasLocation.getLocation() != null ? wasLocation.getLocation().getLocationId() : "null") +
                                     "), Error: " + e.getMessage());
                             e.printStackTrace();
-                            // Return a minimal LocationDTO to prevent complete failure
                             LocationDTO dto = new LocationDTO();
                             if (wasLocation != null && wasLocation.getLocation() != null) {
                                 dto.setLocationId(wasLocation.getLocation().getLocationId());
@@ -78,13 +77,11 @@ public class LocationService {
             Location location = new Location();
             location.setName(locationCreateDTO.getName());
 
-            // Remove latitude and longitude - set to null or empty
             location.setLatitude("");
             location.setLongitude("");
 
-            // Handle both ID-based and name-based creation for backward compatibility
+            // id i ime za kreaciju
             if (locationCreateDTO.getCountryId() != null) {
-                // New ID-based approach
                 Country country = countryRepository.findById(locationCreateDTO.getCountryId())
                         .orElse(null);
                 if (country == null) {
@@ -92,7 +89,6 @@ public class LocationService {
                 }
                 location.setCountry(country);
             } else if (locationCreateDTO.getCountryName() != null && !locationCreateDTO.getCountryName().trim().isEmpty()) {
-                // Legacy name-based approach
                 Country country = countryRepository.findByCountryName(locationCreateDTO.getCountryName().trim())
                         .orElse(null);
                 if (country == null) {
@@ -102,7 +98,6 @@ public class LocationService {
             }
 
             if (locationCreateDTO.getPlaceId() != null) {
-                // New ID-based approach
                 Place place = placeRepository.findById(locationCreateDTO.getPlaceId())
                         .orElse(null);
                 if (place == null) {
@@ -110,7 +105,6 @@ public class LocationService {
                 }
                 location.setPlace(place);
             } else if (locationCreateDTO.getPlaceName() != null && !locationCreateDTO.getPlaceName().trim().isEmpty()) {
-                // Legacy name-based approach
                 Place place = placeRepository.findByPlaceName(locationCreateDTO.getPlaceName().trim())
                         .orElse(null);
                 if (place == null) {
@@ -136,7 +130,6 @@ public class LocationService {
             Trip trip = tripRepository.findById(wasLocationCreateDTO.getTripId())
                     .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-            // Check if user owns the trip
             if (!trip.getUser().getUserId().equals(userId)) {
                 throw new RuntimeException("Unauthorized to add location to this trip");
             }
@@ -166,7 +159,6 @@ public class LocationService {
             Trip trip = tripRepository.findById(tripId)
                     .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-            // Check if user owns the trip
             if (!trip.getUser().getUserId().equals(userId)) {
                 throw new RuntimeException("Unauthorized to remove location from this trip");
             }
@@ -187,17 +179,13 @@ public class LocationService {
             Location location = locationRepository.findById(locationId)
                     .orElseThrow(() -> new RuntimeException("Location not found"));
 
-            // Update location details
             location.setName(locationCreateDTO.getName());
 
-            // Handle both ID-based and name-based updates for backward compatibility
             if (locationCreateDTO.getCountryId() != null) {
-                // New ID-based approach
                 Country country = countryRepository.findById(locationCreateDTO.getCountryId())
                         .orElse(null);
                 location.setCountry(country);
             } else if (locationCreateDTO.getCountryName() != null && !locationCreateDTO.getCountryName().trim().isEmpty()) {
-                // Legacy name-based approach
                 Country country = countryRepository.findByCountryName(locationCreateDTO.getCountryName().trim())
                         .orElse(null);
                 location.setCountry(country);
@@ -206,12 +194,10 @@ public class LocationService {
             }
 
             if (locationCreateDTO.getPlaceId() != null) {
-                // New ID-based approach
                 Place place = placeRepository.findById(locationCreateDTO.getPlaceId())
                         .orElse(null);
                 location.setPlace(place);
             } else if (locationCreateDTO.getPlaceName() != null && !locationCreateDTO.getPlaceName().trim().isEmpty()) {
-                // Legacy name-based approach
                 Place place = placeRepository.findByPlaceName(locationCreateDTO.getPlaceName().trim())
                         .orElse(null);
                 location.setPlace(place);
@@ -235,7 +221,6 @@ public class LocationService {
             Trip trip = tripRepository.findById(tripId)
                     .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-            // Check if user owns the trip
             if (!trip.getUser().getUserId().equals(userId)) {
                 throw new RuntimeException("Unauthorized to update location in this trip");
             }
@@ -243,7 +228,7 @@ public class LocationService {
             WasLocation wasLocation = wasLocationRepository.findByTripTripIdAndLocationLocationId(tripId, locationId)
                     .orElseThrow(() -> new RuntimeException("Location visit not found"));
 
-            // Update WasLocation details
+            // update wasLocation detail
             wasLocation.setVisitedOn(wasLocationCreateDTO.getVisitedOn());
             wasLocation.setNotes(wasLocationCreateDTO.getNotes());
             wasLocation.setVibeRating(wasLocationCreateDTO.getVibeRating());

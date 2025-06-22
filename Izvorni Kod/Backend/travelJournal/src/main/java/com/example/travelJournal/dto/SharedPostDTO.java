@@ -17,15 +17,13 @@ public class SharedPostDTO {
     private String username;
     private Long userId;
     private Long tripId;
-    private List<MediaDTO> mediaPaths; // Changed from List<String> to List<MediaDTO>
+    private List<MediaDTO> mediaPaths;
     private List<CommentDTO> comments;
     private List<ExpenseDTO> expenses;
     private List<LocationDTO> locations;
 
-    // Default constructor
     public SharedPostDTO() {}
 
-    // Constructor for manual creation
     public SharedPostDTO(Long postId, String content, LocalDateTime createdAt, String username, Long userId, Long tripId) {
         this.postId = postId;
         this.content = content;
@@ -35,7 +33,7 @@ public class SharedPostDTO {
         this.tripId = tripId;
     }
 
-    // Constructor from SharedPost entity
+    // konstruktor za sharedPost
     public SharedPostDTO(SharedPost post) {
         this.postId = post.getPostId();
         this.content = post.getContent();
@@ -44,13 +42,11 @@ public class SharedPostDTO {
         this.userId = post.getUser().getUserId();
         this.tripId = post.getTrip().getTripId();
 
-        // Map media with full MediaDTO objects (including locationId)
         this.mediaPaths = post.getTrip().getMediaList()
                 .stream()
                 .map(MediaDTO::new)
                 .collect(Collectors.toList());
 
-        // Map comments
         this.comments = post.getCommentList()
                 .stream()
                 .map(comment -> new CommentDTO(
@@ -63,7 +59,7 @@ public class SharedPostDTO {
                 ))
                 .collect(Collectors.toList());
 
-        // Map expenses
+        // troskovi
         this.expenses = post.getTrip().getExpenses()
                 .stream()
                 .map(expense -> new ExpenseDTO(
@@ -73,26 +69,20 @@ public class SharedPostDTO {
                         expense.getDescription()))
                 .collect(Collectors.toList());
 
-        // Map locations with WasLocation data and associated media
         this.locations = new ArrayList<>();
 
-        // Get WasLocation entries for this trip
         List<WasLocation> wasLocations = post.getTrip().getWasLocations();
 
         if (wasLocations != null) {
             this.locations = wasLocations.stream()
                     .map(wasLocation -> {
-                        // Get the location from WasLocation
+                        // location za WasLocation
                         var location = wasLocation.getLocation();
 
-                        // Check if location is not null
                         if (location != null) {
                             LocationDTO locationDTO = new LocationDTO(
                                     location.getLocationId(),
                                     location.getName(),
-//                                    location.getLatitude(),
-//                                    location.getLongitude(),
-                                    // Use the correct property names for Country and Place
                                     location.getCountry() != null ? location.getCountry().getCountryName() : null,
                                     location.getPlace() != null ? location.getPlace().getPlaceName() : null,
                                     wasLocation.getVisitedOn(),
@@ -102,7 +92,7 @@ public class SharedPostDTO {
                                     wasLocation.getWorthItRating()
                             );
 
-                            // Add media associated with this location
+                            // dodaj media za pojedinu lokaciju
                             List<MediaDTO> locationMedia = post.getTrip().getMediaList()
                                     .stream()
                                     .filter(media -> media.getLocation() != null &&
@@ -117,12 +107,11 @@ public class SharedPostDTO {
                             return null;
                         }
                     })
-                    .filter(locationDTO -> locationDTO != null) // Filter out null entries
+                    .filter(locationDTO -> locationDTO != null)
                     .collect(Collectors.toList());
         }
     }
 
-    // Getters and Setters
     public Long getPostId() {
         return postId;
     }

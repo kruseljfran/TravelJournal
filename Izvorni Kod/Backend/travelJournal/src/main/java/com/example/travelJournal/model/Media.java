@@ -24,12 +24,11 @@ public class Media {
     @JoinColumn(name = "tripId", nullable = false)
     private Trip trip;
 
-    // N to 0...1 relationship with Location
+    // N to 0...1
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "locationId", nullable = true)
     private Location location;
 
-    // Constructors
     public Media() {}
 
     public Media(String filePath, String mediaType, LocalDate uploadedAt, Trip trip, Location location) {
@@ -40,7 +39,6 @@ public class Media {
         this.location = location;
     }
 
-    // Getters and Setters
     public Long getMediaId() {
         return mediaId;
     }

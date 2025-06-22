@@ -27,7 +27,6 @@ public class ExpenseService {
         Trip trip = tripRepository.findById(expenseCreateDTO.getTripId())
                 .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-        // Check if user owns the trip
         if (!trip.getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized to add expense to this trip");
         }
@@ -44,23 +43,20 @@ public class ExpenseService {
     }
 
     public Expense updateExpense(Long expenseId, ExpenseCreateDTO expenseCreateDTO, Long userId) {
-        // Find the expense
         Expense expense = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new RuntimeException("Expense not found"));
 
-        // Check if user owns the trip
+        // provjeri je li putovanje od ulogiranog usera
         if (!expense.getTrip().getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized to update this expense");
         }
 
-        // Update expense fields
         expense.setCategory(expenseCreateDTO.getCategory());
         expense.setAmount(expenseCreateDTO.getAmount());
         expense.setCurrency(expenseCreateDTO.getCurrency());
         expense.setData(expenseCreateDTO.getData());
         expense.setDescription(expenseCreateDTO.getDescription());
 
-        // Save and return updated expense
         return expenseRepository.save(expense);
     }
 
@@ -68,7 +64,7 @@ public class ExpenseService {
         Expense expense = expenseRepository.findById(expenseId)
                 .orElseThrow(() -> new RuntimeException("Expense not found"));
 
-        // Check if user owns the trip
+        // provjeri je li putovanje od ulogiranog usera
         if (!expense.getTrip().getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized to delete this expense");
         }

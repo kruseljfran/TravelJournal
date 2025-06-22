@@ -12,20 +12,18 @@ public class LocationDTO {
     private String countryName;
     private String placeName;
 
-    // WasLocation specific fields
     private LocalDate visitedOn;
     private String notes;
     private Integer vibeRating;
     private Integer foodRating;
     private Integer worthItRating;
 
-    // Media associated with this location
     private List<MediaDTO> media;
 
-    // Default constructor
+    // default konstruktor
     public LocationDTO() {}
 
-    // Constructor with all parameters
+    // konstruktor sa svim paramterima
     public LocationDTO(Long locationId, String name, String countryName, String placeName,
                        LocalDate visitedOn, String notes, Integer vibeRating, Integer foodRating,
                        Integer worthItRating) {
@@ -40,13 +38,12 @@ public class LocationDTO {
         this.worthItRating = worthItRating;
     }
 
-    // Constructor for Location entity
+    // konstruktor za Location
     public LocationDTO(Location location) {
         this.locationId = location.getLocationId();
         this.name = location.getName();
         this.countryName = location.getCountry() != null ? location.getCountry().getCountryName() : null;
         this.placeName = location.getPlace() != null ? location.getPlace().getPlaceName() : null;
-        // WasLocation fields will be null for basic Location
         this.visitedOn = null;
         this.notes = null;
         this.vibeRating = null;
@@ -54,7 +51,7 @@ public class LocationDTO {
         this.worthItRating = null;
     }
 
-    // Constructor for WasLocation entity
+    // konstruktor za wasLocation
     public LocationDTO(WasLocation wasLocation) {
         if (wasLocation.getLocation() != null) {
             Location location = wasLocation.getLocation();
@@ -64,7 +61,6 @@ public class LocationDTO {
             this.placeName = location.getPlace() != null ? location.getPlace().getPlaceName() : null;
         }
 
-        // WasLocation specific data
         this.visitedOn = wasLocation.getVisitedOn();
         this.notes = wasLocation.getNotes();
         this.vibeRating = wasLocation.getVibeRating();
@@ -72,7 +68,6 @@ public class LocationDTO {
         this.worthItRating = wasLocation.getWorthItRating();
     }
 
-    // Getters and Setters
     public Long getLocationId() {
         return locationId;
     }

@@ -21,7 +21,6 @@ public class AuthController {
     private final TJUserRepository userRepository;
     private final TJUserService userService;
 
-    // Constructor injection for both userRepository and userService
     public AuthController(TJUserRepository userRepository, TJUserService userService) {
         this.userRepository = userRepository;
         this.userService = userService;
@@ -46,21 +45,20 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterRequestDTO registerRequest) {
         try {
-            // Check if username already exists
+            // provjeri jel postoji username
             if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
                 return ResponseEntity.status(400).body("Korisničko ime već postoji");
             }
 
-            // Check if email already exists
+            // provjeri jel postoji email
             if (userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
                 return ResponseEntity.status(400).body("Email već postoji");
             }
 
-            // Create new user
             TJUser newUser = new TJUser();
             newUser.setUsername(registerRequest.getUsername());
             newUser.setEmail(registerRequest.getEmail());
-            newUser.setPasswordHash(registerRequest.getPassword()); // In production, hash this!
+            newUser.setPasswordHash(registerRequest.getPassword());
             newUser.setRole("USER");
 
             TJUser savedUser = userRepository.save(newUser);
@@ -88,12 +86,12 @@ public class AuthController {
         Object username = session.getAttribute("username");
 
         if (username != null) {
-            // Fetch the user object by username
+            // dohvati usera po usernameu
             Optional<TJUser> userOpt = userService.getUserByUsername((String) username);
 
             if (userOpt.isPresent()) {
                 TJUser user = userOpt.get();
-                return ResponseEntity.ok(user);  // Return the full user object as JSON
+                return ResponseEntity.ok(user);
             } else {
                 return ResponseEntity.status(404).body("User not found");
             }

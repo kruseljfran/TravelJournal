@@ -33,7 +33,6 @@ public class MediaService {
         Trip trip = tripRepository.findById(mediaCreateDTO.getTripId())
                 .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-        // Check if user owns the trip
         if (!trip.getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized to add media to this trip");
         }
@@ -57,7 +56,6 @@ public class MediaService {
         Media media = mediaRepository.findById(mediaId)
                 .orElseThrow(() -> new RuntimeException("Media not found"));
 
-        // Check if user owns the trip
         if (!media.getTrip().getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized to delete this media");
         }

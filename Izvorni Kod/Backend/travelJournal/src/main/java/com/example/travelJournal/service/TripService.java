@@ -53,7 +53,6 @@ public class TripService {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-        // Check if the user owns this trip
         if (!trip.getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized to update this trip");
         }
@@ -71,7 +70,6 @@ public class TripService {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new RuntimeException("Trip not found"));
 
-        // Check if the user owns this trip
         if (!trip.getUser().getUserId().equals(userId)) {
             throw new RuntimeException("Unauthorized to delete this trip");
         }

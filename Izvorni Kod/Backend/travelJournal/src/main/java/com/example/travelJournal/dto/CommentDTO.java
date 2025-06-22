@@ -10,10 +10,8 @@ public class CommentDTO {
     private String username;
     private Long postId;
 
-    // Default constructor
     public CommentDTO() {}
 
-    // Constructor with all fields
     public CommentDTO(Long commentId, String content, LocalDateTime createdAt,
                       Long userId, String username, Long postId) {
         this.commentId = commentId;
@@ -33,7 +31,6 @@ public class CommentDTO {
         this.postId = postId;
     }
 
-    // Getters and setters
     public Long getCommentId() {
         return commentId;
     }

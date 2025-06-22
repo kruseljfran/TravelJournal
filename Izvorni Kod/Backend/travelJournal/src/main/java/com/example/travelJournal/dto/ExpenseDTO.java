@@ -14,16 +14,14 @@ public class ExpenseDTO {
         this.description = description;
     }
 
-    // Add a new constructor that takes an Expense object
     public ExpenseDTO(com.example.travelJournal.model.Expense expense) {
-        this.expenseId = expense.getExpenseId(); // Add this line to include the ID
+        this.expenseId = expense.getExpenseId();
         this.category = expense.getCategory();
         this.amount = expense.getAmount();
         this.currency = expense.getCurrency();
         this.description = expense.getDescription();
     }
 
-    // Add getter and setter for expenseId
     public Long getExpenseId() {
         return expenseId;
     }

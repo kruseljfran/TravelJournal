@@ -15,10 +15,8 @@ public class MediaDTO {
     private String countryName;
     private String placeName;
 
-    // Default constructor
     public MediaDTO() {}
 
-    // Constructor from Media entity
     public MediaDTO(Media media) {
         this.mediaId = media.getMediaId();
         this.filePath = media.getFilePath();
@@ -44,7 +42,7 @@ public class MediaDTO {
         }
     }
 
-    // Getters and Setters
+
     public Long getMediaId() {
         return mediaId;
     }

@@ -42,7 +42,6 @@ public class SharedPostService {
     }
 
     public SharedPost createPost(SharedPost post) {
-        // Ensure we have the full user and trip objects
         if (post.getUser() != null && post.getUser().getUserId() != null) {
             TJUser user = userRepository.findById(post.getUser().getUserId())
                     .orElseThrow(() -> new RuntimeException("User not found"));
@@ -55,7 +54,6 @@ public class SharedPostService {
             post.setTrip(trip);
         }
 
-        // Set creation time if not provided
         if (post.getCreatedAt() == null) {
             post.setCreatedAt(LocalDateTime.now());
         }
@@ -68,19 +66,16 @@ public class SharedPostService {
                 .map(post -> {
                     post.setContent(postDetails.getContent());
 
-                    // Only update creation time if provided
                     if (postDetails.getCreatedAt() != null) {
                         post.setCreatedAt(postDetails.getCreatedAt());
                     }
 
-                    // Only update trip if provided
                     if (postDetails.getTrip() != null && postDetails.getTrip().getTripId() != null) {
                         Trip trip = tripRepository.findById(postDetails.getTrip().getTripId())
                                 .orElseThrow(() -> new RuntimeException("Trip not found"));
                         post.setTrip(trip);
                     }
 
-                    // Only update user if provided
                     if (postDetails.getUser() != null && postDetails.getUser().getUserId() != null) {
                         TJUser user = userRepository.findById(postDetails.getUser().getUserId())
                                 .orElseThrow(() -> new RuntimeException("User not found"));

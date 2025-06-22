@@ -51,7 +51,6 @@ public class SharedPostController {
                 .collect(Collectors.toList());
     }
 
-    // Keep POST/PUT returning full entity if needed for admin/dev use
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody SharedPost post) {
         try {

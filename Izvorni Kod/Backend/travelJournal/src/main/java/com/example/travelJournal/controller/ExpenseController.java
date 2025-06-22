@@ -1,6 +1,5 @@
 package com.example.travelJournal.controller;
 
-// Make sure to import the ExpenseDTO class
 import com.example.travelJournal.dto.ExpenseDTO;
 import com.example.travelJournal.dto.ExpenseCreateDTO;
 import com.example.travelJournal.model.Expense;
