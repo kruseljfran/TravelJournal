@@ -17,7 +17,6 @@ const ExpenseManager = ({ tripId }) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
-  // Category dropdown states
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
   const [filteredCategories, setFilteredCategories] = useState([
     "Prijevoz",
@@ -41,7 +40,6 @@ const ExpenseManager = ({ tripId }) => {
     "Ostalo",
   ])
 
-  // Currency dropdown states
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false)
   const [filteredCurrencies, setFilteredCurrencies] = useState([])
   const [showEditCurrencyDropdown, setShowEditCurrencyDropdown] = useState(false)
@@ -68,7 +66,7 @@ const ExpenseManager = ({ tripId }) => {
     if (tripId) {
       fetchExpenses()
     }
-    // Initialize filtered currencies
+    // valute
     setFilteredCurrencies(currencies)
     setFilteredEditCurrencies(currencies)
   }, [tripId])
@@ -87,7 +85,6 @@ const ExpenseManager = ({ tripId }) => {
     }
   }
 
-  // Category handlers
   const handleCategoryInputChange = (e) => {
     const value = e.target.value
     setFormData({ ...formData, category: value })
@@ -118,7 +115,6 @@ const ExpenseManager = ({ tripId }) => {
     setFilteredEditCategories(categories)
   }
 
-  // Currency handlers
   const handleCurrencyInputChange = (e) => {
     const value = e.target.value
     setFormData({ ...formData, currency: value })

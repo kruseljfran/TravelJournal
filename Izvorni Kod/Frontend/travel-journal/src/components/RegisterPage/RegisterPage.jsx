@@ -28,7 +28,6 @@ const RegisterPage = () => {
     setError("")
     setSuccess("")
 
-    // Validation
     if (formData.password !== formData.confirmPassword) {
       setError("Lozinke se ne poklapaju")
       return

@@ -31,7 +31,7 @@ function SharedPosts({ currentUser }) {
   }
 
   const handleDeletePost = async (postId, event) => {
-    event.stopPropagation() // Prevent navigation when clicking delete
+    event.stopPropagation()
 
     if (!window.confirm("Jeste li sigurni da želite obrisati ovu objavu?")) {
       return
@@ -44,7 +44,6 @@ function SharedPosts({ currentUser }) {
       })
 
       if (response.ok) {
-        // Remove the post from the local state
         setPosts(posts.filter((post) => post.postId !== postId))
       } else {
         alert("Greška pri brisanju objave")
@@ -55,12 +54,11 @@ function SharedPosts({ currentUser }) {
     }
   }
 
-  // Helper function to get first media item
   const getFirstMedia = (post) => {
     const generalMedia = post.mediaPaths?.filter((media) => !media.locationId) || []
     if (generalMedia.length > 0) return generalMedia[0]
 
-    // Check location media
+    // media za lokaciju
     if (post.locations) {
       for (const location of post.locations) {
         if (location.media && location.media.length > 0) {
@@ -171,14 +169,14 @@ const styles = {
     marginBottom: "30px",
   },
   headerTitle: {
-    color: "#2c3e50", // Changed from #FF6B6B to dark readable color
+    color: "#2c3e50",
     fontSize: "2.5rem",
     marginBottom: "10px",
     fontWeight: "700",
   },
   subtitle: {
     fontSize: "1.1rem",
-    color: "#495057", // Changed from #6c757d to darker readable color
+    color: "#495057",
     marginBottom: "0",
     fontWeight: "500",
   },
@@ -227,14 +225,14 @@ const styles = {
     flex: "1",
     display: "flex",
     flexDirection: "column",
-    position: "relative", // Add this line
+    position: "relative",
   },
   postHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: "12px",
-    paddingRight: "36px", // Add padding to make room for delete button
+    paddingRight: "36px", // za delete
   },
   username: {
     fontSize: "1.1rem",

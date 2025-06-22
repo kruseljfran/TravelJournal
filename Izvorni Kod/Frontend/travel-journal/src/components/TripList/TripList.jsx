@@ -36,11 +36,9 @@ const TripList = ({ currentUser }) => {
 
   const handleTripCreated = (trip) => {
     if (editingTrip) {
-      // Update existing trip
       setTrips((prev) => prev.map((t) => (t.tripId === trip.tripId ? trip : t)))
       setEditingTrip(null)
     } else {
-      // Add new trip
       setTrips((prev) => [trip, ...prev])
     }
     setShowForm(false)
@@ -77,7 +75,6 @@ const TripList = ({ currentUser }) => {
     const content = `${trip.title}! ${trip.description}`
 
     try {
-      // First, get the trip details to ensure we have the full object
       const tripResponse = await fetch(`http://localhost:8080/api/trips/${tripId}`, {
         credentials: "include",
       })
@@ -88,7 +85,7 @@ const TripList = ({ currentUser }) => {
 
       const tripData = await tripResponse.json()
 
-      // Create the post with proper object references
+      // kreiraj post
       const postData = {
         content: content,
         user: { userId: currentUser.userId },
@@ -167,7 +164,7 @@ const TripList = ({ currentUser }) => {
         </button>
       </div>
 
-      {/* Search Bar */}
+      {/* trazilica */}
       <div style={styles.searchContainer}>
         <div style={styles.searchInputWrapper}>
           <input

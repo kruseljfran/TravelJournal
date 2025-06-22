@@ -12,7 +12,6 @@ function PostDetail({ currentUser }) {
   const [deletingComments, setDeletingComments] = useState(new Set())
 
   useEffect(() => {
-    // Fetch single post details
     fetch(`http://localhost:8080/api/shared-posts/${postId}`, {
       credentials: "include",
     })
@@ -197,7 +196,7 @@ function PostDetail({ currentUser }) {
         <div style={styles.postContent}>
           <p style={styles.contentText}>{post.content}</p>
 
-          {/* General Media */}
+          {/* generalna media */}
           {getGeneralMedia(post).length > 0 && (
             <div style={styles.section}>
               <h2 style={styles.sectionTitle}>📸 Mediji putovanja</h2>
@@ -211,7 +210,7 @@ function PostDetail({ currentUser }) {
             </div>
           )}
 
-          {/* Locations */}
+          {/* lokacije */}
           {post.locations && post.locations.length > 0 && (
             <div style={styles.section}>
               <h2 style={styles.sectionTitle}>📍 Posjećene lokacije</h2>
@@ -269,7 +268,7 @@ function PostDetail({ currentUser }) {
             </div>
           )}
 
-          {/* Expenses */}
+          {/* troskovi */}
           {post.expenses && post.expenses.length > 0 && (
             <div style={styles.section}>
               <h2 style={styles.sectionTitle}>💰 Troškovi putovanja</h2>
@@ -289,7 +288,7 @@ function PostDetail({ currentUser }) {
             </div>
           )}
 
-          {/* Comments */}
+          {/* komentari */}
           <div style={styles.section}>
             <h2 style={styles.sectionTitle}>💬 Komentari ({post.comments?.length || 0})</h2>
 
@@ -372,7 +371,7 @@ const styles = {
     overflow: "hidden",
   },
   postHeader: {
-    background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)", // Changed to dark gradient for better contrast
+    background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
     color: "white",
     padding: "30px",
     display: "flex",
@@ -386,20 +385,20 @@ const styles = {
     fontSize: "2rem",
     fontWeight: "700",
     margin: "0 0 8px 0",
-    color: "white", // Explicitly set to white for better contrast
-    textShadow: "1px 1px 2px rgba(0,0,0,0.3)", // Added text shadow for better readability
+    color: "white",
+    textShadow: "1px 1px 2px rgba(0,0,0,0.3)", // sjena
   },
   postDate: {
     fontSize: "1rem",
-    opacity: "0.95", // Slightly increased opacity
+    opacity: "0.95",
     margin: "0",
-    color: "#ecf0f1", // Light gray color for better readability
+    color: "#ecf0f1",
   },
   tripInfo: {
     textAlign: "right",
   },
   tripBadge: {
-    backgroundColor: "rgba(255,255,255,0.25)", // Slightly more opaque for better visibility
+    backgroundColor: "rgba(255,255,255,0.25)",
     padding: "8px 16px",
     borderRadius: "20px",
     fontSize: "0.9rem",
@@ -427,7 +426,7 @@ const styles = {
     borderBottom: "2px solid #e9ecef",
     paddingBottom: "10px",
   },
-  // Media styles
+  // media
   mediaGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
@@ -452,7 +451,7 @@ const styles = {
     width: "100%",
     height: "60px",
   },
-  // Location styles
+  // location
   locationsGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
@@ -527,7 +526,7 @@ const styles = {
     overflow: "hidden",
     aspectRatio: "1",
   },
-  // Expense styles
+  // expense
   expensesGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
@@ -560,7 +559,7 @@ const styles = {
     color: "#666",
     margin: "0",
   },
-  // Comment styles
+  // comment
   commentForm: {
     marginBottom: "25px",
   },

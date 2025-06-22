@@ -39,46 +39,46 @@ function App() {
   return (
     <Router>
       <div className="App min-h-screen">
-        {/* Show header only when logged in */}
+        {/* header samo ako je korisnik ulogiran */}
         {currentUser && <Header onSignOut={signOut} />}
 
-        {/* Add top padding when header is shown */}
+        {/* header padding */}
         <div style={{ paddingTop: currentUser ? "80px" : "0" }}>
           <Routes>
-            {/* Login route */}
+            {/* Login */}
             <Route
               path="/login"
               element={currentUser ? <Navigate to="/home" replace /> : <LoginPage onLogin={setCurrentUser} />}
             />
 
-            {/* Register route */}
+            {/* Register */}
             <Route path="/register" element={currentUser ? <Navigate to="/home" replace /> : <RegisterPage />} />
 
-            {/* Home route */}
+            {/* Home */}
             <Route
               path="/home"
               element={currentUser ? <SharedPosts currentUser={currentUser} /> : <Navigate to="/login" replace />}
             />
 
-            {/* Post detail route */}
+            {/* Post detail */}
             <Route
               path="/post/:postId"
               element={currentUser ? <PostDetail currentUser={currentUser} /> : <Navigate to="/login" replace />}
             />
 
-            {/* Trips route */}
+            {/* Trips */}
             <Route
               path="/trips"
               element={currentUser ? <TripList currentUser={currentUser} /> : <Navigate to="/login" replace />}
             />
 
-            {/* User Profile route */}
+            {/* Profile */}
             <Route
               path="/profile"
               element={currentUser ? <User currentUser={currentUser} /> : <Navigate to="/login" replace />}
             />
 
-            {/* Default route */}
+            {/* Default */}
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </div>

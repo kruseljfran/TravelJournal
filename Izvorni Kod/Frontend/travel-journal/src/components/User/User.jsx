@@ -24,7 +24,6 @@ function User({ currentUser }) {
         let commentsCount = 0
         const countriesSet = new Set()
 
-        // Fetch user's trips
         try {
           const tripsResponse = await fetch(`http://localhost:8080/api/trips/user/${currentUser.userId}`, {
             credentials: "include",
@@ -34,7 +33,6 @@ function User({ currentUser }) {
             tripsCount = trips.length
             console.log("Trips found:", trips.length)
 
-            // For each trip, get its locations and count unique countries
             for (const trip of trips) {
               try {
                 const locationsResponse = await fetch(`http://localhost:8080/api/locations/trip/${trip.tripId}`, {
@@ -62,7 +60,6 @@ function User({ currentUser }) {
           console.error("Error fetching trips:", error)
         }
 
-        // Fetch all shared posts and filter by user
         try {
           const postsResponse = await fetch(`http://localhost:8080/api/shared-posts`, {
             credentials: "include",
@@ -77,7 +74,7 @@ function User({ currentUser }) {
           console.error("Error fetching shared posts:", error)
         }
 
-        // Fetch user's comments using the specific endpoint
+        // fetchat komentare za usera
         try {
           const commentsResponse = await fetch(`http://localhost:8080/api/comments/user/${currentUser.userId}`, {
             credentials: "include",
@@ -118,7 +115,6 @@ function User({ currentUser }) {
     fetchUserStats()
   }, [currentUser?.userId])
 
-  // Check if currentUser exists
   if (!currentUser) {
     return (
       <div style={styles.container}>

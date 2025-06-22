@@ -23,14 +23,12 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
   const [lastUsedCountryId, setLastUsedCountryId] = useState("")
   const [lastUsedPlaceId, setLastUsedPlaceId] = useState("")
 
-  // Search states for dropdowns
   const [countrySearch, setCountrySearch] = useState("")
   const [placeSearch, setPlaceSearch] = useState("")
   const [showCountryDropdown, setShowCountryDropdown] = useState(false)
   const [showPlaceDropdown, setShowPlaceDropdown] = useState(false)
   const [filteredCountries, setFilteredCountries] = useState([])
 
-  // Edit form search states
   const [editCountrySearch, setEditCountrySearch] = useState("")
   const [editPlaceSearch, setEditPlaceSearch] = useState("")
   const [showEditCountryDropdown, setShowEditCountryDropdown] = useState(false)
@@ -49,7 +47,7 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
         setLocations(data)
         onLocationsChange?.(data)
 
-        // Update presets from the newest location
+        // najnovija lokacija
         if (data.length > 0) {
           const newestLocation = data[data.length - 1]
           const countryId = newestLocation.countryId ? newestLocation.countryId.toString() : ""
@@ -75,7 +73,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
     }
   }, [tripId, fetchLocations])
 
-  // Reset presets when trip changes
   useEffect(() => {
     setLastUsedCountryId("")
     setLastUsedPlaceId("")
@@ -127,7 +124,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
     }
   }
 
-  // Filter countries based on search
   const filterCountries = (searchTerm, isEdit = false) => {
     const filtered = countries.filter((country) => country.countryName.toLowerCase().includes(searchTerm.toLowerCase()))
     if (isEdit) {
@@ -137,11 +133,10 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
     }
   }
 
-  // Filter places based on search and selected country
+  // filtracija za mjesta
   const filterPlaces = (searchTerm, selectedCountryId, isEdit = false) => {
     let placesToFilter = places
 
-    // First filter by country if one is selected
     if (selectedCountryId) {
       placesToFilter = places.filter((place) => {
         const placeCountryId = place.country ? place.country.countryId : place.countryId
@@ -149,7 +144,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
       })
     }
 
-    // Then filter by search term
     const filtered = placesToFilter.filter((place) => place.placeName.toLowerCase().includes(searchTerm.toLowerCase()))
 
     if (isEdit) {
@@ -189,14 +183,13 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
       setEditCountrySearch(country.countryName)
       setShowEditCountryDropdown(false)
       setEditPlaceSearch("")
-      // Filter places for selected country
       filterPlaces("", country.countryId.toString(), true)
     } else {
       setNewLocation({ ...newLocation, countryId: country.countryId.toString(), placeId: "" })
       setCountrySearch(country.countryName)
       setShowCountryDropdown(false)
       setPlaceSearch("")
-      // Filter places for selected country
+      // filtriraj mjesta za drzavu
       filterPlaces("", country.countryId.toString(), false)
     }
   }
@@ -230,7 +223,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
       }
     }
 
-    // Update filtered places for the preset country
     if (lastUsedCountryId) {
       filterPlaces("", lastUsedCountryId, false)
     }
@@ -241,7 +233,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
     setIsLoading(true)
 
     try {
-      // Step 1: Create the location
       const locationData = {
         name: newLocation.name,
         countryId: newLocation.countryId ? Number.parseInt(newLocation.countryId) : null,
@@ -268,7 +259,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
       const locationId = await locationResponse.json()
       console.log("Created location with ID:", locationId)
 
-      // Step 2: Add the location to the trip (create WasLocation)
       if (tripId) {
         const wasLocationData = {
           tripId: Number.parseInt(tripId),
@@ -298,14 +288,13 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
         }
       }
 
-      // Update the last used values for next location
+      // zadnje koristene lokacije
       setLastUsedCountryId(newLocation.countryId)
       setLastUsedPlaceId(newLocation.placeId)
 
       await fetchLocations()
       alert("Lokacija je uspješno dodana!")
 
-      // Reset form but keep the presets
       setNewLocation({
         name: "",
         countryId: lastUsedCountryId,
@@ -342,14 +331,12 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
       worthItRating: location.worthItRating,
     })
 
-    // Set search values for edit form
     const country = countries.find((c) => c.countryId.toString() === countryId)
     const place = places.find((p) => p.placeId.toString() === placeId)
 
     setEditCountrySearch(country ? country.countryName : "")
     setEditPlaceSearch(place ? place.placeName : "")
 
-    // Filter places for the selected country
     if (countryId) {
       filterPlaces("", countryId, true)
     }
@@ -359,7 +346,7 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
     setIsLoading(true)
 
     try {
-      // Update the location basic info
+      // update location info
       const locationData = {
         name: editFormData.name,
         countryId: editFormData.countryId ? Number.parseInt(editFormData.countryId) : null,
@@ -383,7 +370,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
         throw new Error("Neuspješno ažuriranje lokacije")
       }
 
-      // Update the WasLocation data
       const wasLocationData = {
         tripId: Number.parseInt(tripId),
         locationId: locationId,
@@ -433,7 +419,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
     setShowEditCountryDropdown(false)
     setShowEditPlaceDropdown(false)
 
-    // Reapply presets when canceling edit
     applyPresets()
   }
 
@@ -508,7 +493,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
       setEditPlaceSearch("")
       setShowEditCountryDropdown(false)
       setShowEditPlaceDropdown(false)
-      // Reset places to show all places
       setEditFilteredPlaces(places)
     } else {
       setNewLocation({ ...newLocation, countryId: "", placeId: "" })
@@ -516,7 +500,6 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
       setPlaceSearch("")
       setShowCountryDropdown(false)
       setShowPlaceDropdown(false)
-      // Reset places to show all places
       setFilteredPlaces(places)
     }
   }
@@ -699,14 +682,13 @@ const LocationManager = ({ tripId, onLocationsChange }) => {
     </div>
   )
 
-  // Apply presets when lastUsedCountryId or lastUsedPlaceId changes
+  // koristi preset za last used
   useEffect(() => {
     if (countries.length > 0 && places.length > 0) {
       applyPresets()
     }
   }, [lastUsedCountryId, lastUsedPlaceId, applyPresets, countries, places])
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       setShowCountryDropdown(false)

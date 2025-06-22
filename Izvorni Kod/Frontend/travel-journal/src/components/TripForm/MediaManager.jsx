@@ -13,7 +13,7 @@ const MediaManager = ({ tripId }) => {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
-  const [uploadMethod, setUploadMethod] = useState("file") // "file" or "url"
+  const [uploadMethod, setUploadMethod] = useState("file")
 
   useEffect(() => {
     if (tripId) {
@@ -54,11 +54,9 @@ const MediaManager = ({ tripId }) => {
     const file = e.target.files[0]
     if (!file) return
 
-    // Extract just the filename and create the path
     const fileName = file.name
     const filePath = `/uploads/${fileName}`
 
-    // Determine media type from file extension
     let mediaType = "image"
     const extension = fileName.toLowerCase().split(".").pop()
 

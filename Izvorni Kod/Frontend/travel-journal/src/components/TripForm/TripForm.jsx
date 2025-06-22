@@ -31,7 +31,6 @@ const TripForm = ({ onTripCreated, onCancel, initialTrip = null }) => {
     setLoading(true)
     setError("")
 
-    // Validation
     if (new Date(formData.endDate) < new Date(formData.startDate)) {
       setError("Datum završetka mora biti nakon datuma početka")
       setLoading(false)
@@ -61,7 +60,6 @@ const TripForm = ({ onTripCreated, onCancel, initialTrip = null }) => {
         const trip = await response.json()
         setCreatedTrip(trip)
 
-        // Always move to next step after saving basic info
         setCurrentStep(2)
       } else {
         setError("Neuspješno spremanje putovanja. Molimo pokušajte ponovno.")
